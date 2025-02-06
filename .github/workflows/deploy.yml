@@ -9,53 +9,69 @@ on:
     branches: [ master, next ]
 
   # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+  # workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
   deploy:
     runs-on: ubuntu-latest
+    environment: deploy
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
       
-      - name: Enable command line
+      - name: Start Countly
         shell: bash
-        run: sudo bash ./bin/scripts/detect.init.sh
+        run: sudo bash ./bin/scripts/countly.install.sh
         
-      - name: Installing dependencies
+      - name: Install clever-tools
         shell: bash
-        run: npm install
-     
-      - name: Deploy server
-        shell: bash
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        run: bash ./bin/scripts/deploy.sh
+        run: npm install clever-tools
 
-      - name: Deploy documentation
+      - name: Push code
         shell: bash
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: bash ./bin/scripts/generateDocs.sh
-  push_all:
-    name: Push Countly Test Image
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out the repo
-        uses: actions/checkout@v2
+          CLEVER_TOKEN: ${{secrets.CLEVER_TOKEN}}
+          CLEVER_SECRET: ${{secrets.CLEVER_SECRET}}
+          APP_ID: ${{SECRETS.APP_ID}}
+        run: |
+          clever link $APP_ID
+          clever deploy
+     
+        
+      #- name: Installing dependencies
+      #  shell: bash
+      #  run: npm install
+     
+      #- name: Deploy server
+      #  shell: bash
+      #  env:
+      #    SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      #  run: bash ./bin/scripts/deploy.sh
+
+      #- name: Deploy documentation
+      #  shell: bash
+      #  env:
+      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #  run: bash ./bin/scripts/generateDocs.sh
+#  push_all:
+#    name: Push Countly Test Image
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Check out the repo
+#        uses: actions/checkout@v2
       
-      - name: Log in to Docker Hub
-        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      
-      - name: Build and push Docker image
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-        with:
-          push: true
-          file: ./Dockerfile-core
-          tags: countly/countly-core:pipelines-${{ github.base_ref || github.ref_name }}
+#      - name: Log in to Docker Hub
+#        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+#        with:
+#          username: ${{ secrets.DOCKERHUB_USERNAME }}
+#          password: ${{ secrets.DOCKERHUB_TOKEN }}
+#      
+#      - name: Build and push Docker image
+#        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+#        with:
+#          push: true
+#          file: ./Dockerfile-core
+#          tags: countly/countly-core:pipelines-${{ github.base_ref || github.ref_name }}
