@@ -14,7 +14,7 @@ fi
 sudo bash "$DIR/scripts/init_countly_user.sh"
 cd "$DIR/../"
 
-sudo su countly -c "/bin/bash $DIR/scripts/check_countly_user_permissions.sh > /dev/null 2>&1"
+sudo su countly -c "/bin/bash $DIR/scripts/check_countly_user_permissions.sh"
 
 if [ ! -f ./permission_test_file.txt ]; then
     PARENT_DIR=$(cd ./../ && pwd)
