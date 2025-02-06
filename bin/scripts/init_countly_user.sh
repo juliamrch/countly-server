@@ -9,7 +9,7 @@ if [ "$(getent passwd countly)x" == 'x' ]; then
     #create countly user
     useradd -d "$COUNTLY_DIR" -M -U countly
     #countly process should be able to restart itself
-    echo "countly ALL=(ALL) NOPASSWD:ALL" | tee -a /etc/sudoers.d/countly >/dev/null
+    echo "countly ALL=(ALL) NOPASSWD:ALL" | tee -a /etc/sudoers.d/countly
 else
     echo "Countly user already exist."
     usermod -d "$COUNTLY_DIR" countly
