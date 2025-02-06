@@ -21,14 +21,11 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-
-      - name: Where are we
-        shell: bash
-        run: pwd
       
+      # Path: /home/runner/work/countly-server/countly-server
       - name: Start Countly
         shell: bash
-        run: sudo bash ./bin/scripts/countly.install.sh
+        run: sudo bash ./bin/countly.install.sh
         
       - name: Install clever-tools
         shell: bash
