@@ -21,7 +21,11 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-      
+
+      - name: set root 
+        shell: bash
+        run: export RUNNER_ALLOW_RUNASROOT=“1”
+     
       # Path: /home/runner/work/countly-server/countly-server
       - name: Start Countly
         shell: bash
